@@ -2,7 +2,7 @@
 **/.vscode
 **/bin
 **/obj
-**/*.db
+**/*.db*
 **/*.bak
 **/*.user
 **/node_modules
