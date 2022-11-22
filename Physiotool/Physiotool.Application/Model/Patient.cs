@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
-/*
- 	SVNr INTEGER NOT NULL,
-	Vorname TEXT(50),
-	Nachname TEXT(50),
-	Strasse TEXT,
-	PLZ NUMERIC,
-	Ort TEXT,
-	Email TEXT NOT NULL,
-	Telefonnummer TEXT NOT NULL, Termin INTEGER,
-	CONSTRAINT SVNr PRIMARY KEY (SVNr)
-* 
- */
 namespace Physiotool.Application.Model
 {
     [Table("Patient")]
@@ -51,5 +39,6 @@ namespace Physiotool.Application.Model
         public string Email { get; set; }
         [MaxLength(255)]
         public string Phone { get; set; }
+        public List<Appointment> Appointments { get; } = new();
     }
 }
