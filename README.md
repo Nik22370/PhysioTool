@@ -23,7 +23,7 @@ Es startet mit *dotnet watch run* die ASP.NET Core Applikation in *Physiotool.We
 in den Ordner *node_modules* geladen. Danach kann mit *npm run dev* der Dev Server gestartet
 werden.
 
-Soll ein Bundle erstellt werden, rufe *npm run build* auf. Es kopiert das Bundle in den wwwroot
+Soll ein Bundle erstellt werden, rufe *npm run build* auf. Es kopiert das Bundle in den *wwwroot*
 Ordner des Webapi Projektes. Dann liefert der ASP.NET Core Server die App als Standarddokument
 aus.
 
