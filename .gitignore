@@ -5,3 +5,4 @@
 **/*.db
 **/*.bak
 **/*.user
+**/node_modules

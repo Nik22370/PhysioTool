@@ -1,12 +1,5 @@
 REM @echo off
-REM Löscht alle temporären Visual Studio Dateien
-rd /S /Q ".vs"
-rd /S /Q ".vscode"
-  
-FOR /D /R %%d IN (*) DO (
-  rd /S /Q "%%d\bin"
-  rd /S /Q "%%d\obj"
-)
 
-cd eFormular.App
+cd Physiotool
+cd Physiotool.Webapi
 dotnet watch run -c Debug
