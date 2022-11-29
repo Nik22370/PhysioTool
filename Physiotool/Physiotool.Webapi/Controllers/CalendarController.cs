@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Physiotool.Application.Infrastructure;
 using Physiotool.Application.Model;
@@ -26,7 +26,7 @@ namespace Physiotool.Webapi.Controllers
             var calendarDays = _calendarService.GetDaysOfMonth(year, month);
             var appointments = _db.Appointments.Include(a => a.Patient).Where(a => a.Date.Month == month && a.Date.Year == year).ToList();
             var result = calendarDays.GroupJoin(
-                appointments, c => c.Date, a => a.Date,
+                appointments, c => c.DateTime, a => a.Date,
                 (calendarDay, appointments) => new
                 {
                     Timestamp = calendarDay.JsTimestamp,
@@ -44,8 +44,8 @@ namespace Physiotool.Webapi.Controllers
                         PatientFirstname = a.Patient.Firstname,
                         PatientLastname = a.Patient.Lastname,
                         PatientEmail = a.Patient.Email,
-                        a.Time.Hour,
-                        a.Time.Minute,
+                        a.Time.TotalHours,
+                        a.Time.TotalMinutes,
                         Timestamp = calendarDay.JsTimestamp + a.Time.Ticks / TimeSpan.TicksPerMillisecond,
                         Confirmed = a is ConfirmedAppointment,
                         Deleted = a is DeletedAppointment,

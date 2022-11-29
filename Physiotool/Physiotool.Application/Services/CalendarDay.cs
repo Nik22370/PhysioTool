@@ -14,7 +14,6 @@ namespace Physiotool.Application.Services
 
         public CalendarDay(DateTime dateTime, bool isPublicHoliday, bool isSchoolHoliday, string? publicHolidayName, string? schoolHolidayName)
         {
-            Date = DateOnly.FromDateTime(dateTime);
             DateTime = dateTime;
             IsPublicHoliday = isPublicHoliday;
             IsSchoolHoliday = isSchoolHoliday;
@@ -34,7 +33,6 @@ namespace Physiotool.Application.Services
         }
 
         public long JsTimestamp { get; }
-        public DateOnly Date { get; }
         public DateTime DateTime { get; }
         public DateTime Date2000 { get; }
         public int Schoolyear { get; }

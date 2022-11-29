@@ -13,7 +13,7 @@ using (var db = PhysioContext.WithSqlite())
     db.Seed();
 }
 
-// Liefert alle Tage dieses Jahrhunderts mit den österreichischen Feiertagen.
+// Liefert alle Tage dieses Jahrhunderts mit den Ã¶sterreichischen Feiertagen.
 var calendarService = new CalendarService(2000, 2100);
 
 // *************************************************************************************************
@@ -30,7 +30,7 @@ if (builder.Environment.IsDevelopment())
 // *************************************************************************************************
 
 var app = builder.Build();
-// Für den vite Dev Server. Er greift von einem anderen Port auf die API zu.
+// FÃ¼r den vite Dev Server. Er greift von einem anderen Port auf die API zu.
 if (app.Environment.IsDevelopment()) { app.UseCors(); }
 app.UseStaticFiles();
 
@@ -41,7 +41,7 @@ app.MapGet("/api/patients", () => new PatientController(PhysioContext.WithSqlite
 // Liefert die Termine eines Monats.
 // Beispiel: http://localhost:5000/api/calendar/2022/1
 app.MapGet("/api/calendar/{year:int}/{month:int}", (int year, int month) =>
-    new CalendarController(PhysioContext.WithSqlServerContainer(), calendarService).GetCalendar(year, month));
+    new CalendarController(PhysioContext.WithSqlite(), calendarService).GetCalendar(year, month));
 
 app.MapFallbackToFile("index.html");
 app.Run();

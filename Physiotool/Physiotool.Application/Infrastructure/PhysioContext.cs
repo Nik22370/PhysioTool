@@ -11,20 +11,6 @@ using System.Threading.Tasks;
 
 namespace Physiotool.Application.Infrastructure
 {
-    public class DateOnlyConverter : ValueConverter<DateOnly, DateTime>
-    {
-        public DateOnlyConverter()
-            : base(v => v.ToDateTime(new TimeOnly(0)), v => DateOnly.FromDateTime(v))
-        { }
-    }
-
-    public class TimeOnlyConverter : ValueConverter<TimeOnly, TimeSpan>
-    {
-        public TimeOnlyConverter()
-            : base(v => v.ToTimeSpan(), v => TimeOnly.FromTimeSpan(v))
-        { }
-    }
-
     public class PhysioContext : DbContext
     {
         public DbSet<Patient> Patients => Set<Patient>();
@@ -37,13 +23,6 @@ namespace Physiotool.Application.Infrastructure
         protected DbSet<DeletedAppointment> DeletedAppointments => Set<DeletedAppointment>();
 
         public static PhysioContext WithSqlite() => WithSqlite("physio.db");
-        public static PhysioContext WithSqlServerContainer()
-        {
-            var opt = new DbContextOptionsBuilder<PhysioContext>()
-                .UseSqlServer(@"Server=127.0.0.1,1433;Initial Catalog=PhysioDb;User Id=sa;Password=SqlServer2019")
-                .Options;
-            return new PhysioContext(opt);
-        }
 
         public static PhysioContext WithSqlite(string filename)
         {
@@ -55,14 +34,25 @@ namespace Physiotool.Application.Infrastructure
 
         public PhysioContext(DbContextOptions<PhysioContext> opt) : base(opt)
         { }
-        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-        {
-            configurationBuilder.Properties<DateOnly>().HaveConversion<DateOnlyConverter>();
-            configurationBuilder.Properties<TimeOnly>().HaveConversion<TimeOnlyConverter>();
-        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var key in entityType.GetForeignKeys())
+                    key.DeleteBehavior = DeleteBehavior.Restrict;
 
+                foreach (var prop in entityType.GetDeclaredProperties())
+                {
+                    if (prop.Name == "Guid")
+                    {
+                        modelBuilder.Entity(entityType.ClrType).HasAlternateKey("Guid");
+                        prop.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd;
+                    }
+                    if (prop.ClrType == typeof(string) && prop.GetMaxLength() is null) prop.SetMaxLength(255);
+                    if (prop.ClrType == typeof(DateTime)) prop.SetPrecision(3);
+                    if (prop.ClrType == typeof(DateTime?)) prop.SetPrecision(3);
+                }
+            }
         }
 
         public void Seed()
@@ -92,11 +82,11 @@ namespace Physiotool.Application.Infrastructure
             var appointments = new Faker<Appointment>("de").CustomInstantiator(f =>
             {
                 // Ein Termin wird zwischen 1.9.2020 und 1.6.2022 erstellt.
-                var date = f.Date.BetweenDateOnly(new DateOnly(2020, 9, 1), new DateOnly(2022, 6, 1));
+                var date = f.Date.Between(new DateTime(2020, 9, 1), new DateTime(2022, 6, 1)).Date;
                 // Termine nur zu vollen 1/4 Stunden erstellen.
-                var time = new TimeOnly(8, 0).AddMinutes(f.Random.Int(0, 32) * 15);
+                var time = TimeSpan.FromMinutes(8 * 60 + f.Random.Int(0, 32) * 15);
                 // 1 - 3 Tage vor dem Termin ist die Anmeldung.
-                var appointmentCreated = date.ToDateTime(time).AddSeconds(-f.Random.Int(24 * 3600, 72 * 3600));
+                var appointmentCreated = (date + time).AddSeconds(-f.Random.Int(24 * 3600, 72 * 3600));
                 return f.Random.Int(1, 3) switch
                 {
                     2 => new ConfirmedAppointment(

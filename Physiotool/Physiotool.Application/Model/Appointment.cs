@@ -10,9 +10,9 @@ namespace Physiotool.Application.Model
     [Table("Appointment")]
     public class Appointment
     {
-        public Appointment(DateOnly date, TimeOnly time, Patient patient, DateTime created)
+        public Appointment(DateTime date, TimeSpan time, Patient patient, DateTime created)
         {
-            Date = date;
+            Date = date.Date;
             Time = time;
             PatientId = patient.Id;
             Patient = patient;
@@ -23,8 +23,8 @@ namespace Physiotool.Application.Model
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         [Key]
         public int Id { get; set; }
-        public DateOnly Date { get; set; }
-        public TimeOnly Time { get; set; }
+        public DateTime Date { get; set; }
+        public TimeSpan Time { get; set; }
         public int PatientId { get; set; }
         public Patient Patient { get; set; }
         public DateTime Created { get; set; }
@@ -35,7 +35,7 @@ namespace Physiotool.Application.Model
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         protected ConfirmedAppointment() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public ConfirmedAppointment(DateOnly date, TimeOnly time, Patient patient, DateTime created, TimeSpan duration)
+        public ConfirmedAppointment(DateTime date, TimeSpan time, Patient patient, DateTime created, TimeSpan duration)
             : base(date, time, patient, created)
         {
             Duration = duration;
@@ -47,7 +47,7 @@ namespace Physiotool.Application.Model
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         protected DeletedAppointment() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public DeletedAppointment(DateOnly date, TimeOnly time, Patient patient, DateTime created)
+        public DeletedAppointment(DateTime date, TimeSpan time, Patient patient, DateTime created)
             : base(date, time, patient, created) { }
     }
 }
