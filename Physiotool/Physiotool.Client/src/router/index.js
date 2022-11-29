@@ -13,7 +13,12 @@ const router = createRouter({
       path: '/calendar',
       name: 'calendar',
       component: () => import('../views/CalendarView.vue')
-    }    
+    },
+    {
+      path: '/patient',
+      name: 'patient',
+      component: () => import('../views/PatientView.vue')
+    },    
   ]
 })
 

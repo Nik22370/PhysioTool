@@ -1,6 +1,6 @@
 <template>
     <div class="calendar">
-        <h1>Kalender</h1>
+        <h1>Mein Kalender</h1>
         <div v-for="day in days" v-bind:key="day.timestamp">
             {{ day.germanDate }}
         </div>
