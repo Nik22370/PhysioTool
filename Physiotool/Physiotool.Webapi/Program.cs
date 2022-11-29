@@ -6,7 +6,7 @@ using Physiotool.Application.Services;
 using Physiotool.Webapi.Controllers;
 
 // Scaffolding the Database
-using (var db = PhysioContext.WithSqlite())
+using (var db = PhysioContext.WithSqlServerContainer())
 {
     db.Database.EnsureDeleted();
     db.Database.EnsureCreated();
@@ -41,7 +41,7 @@ app.MapGet("/api/patients", () => new PatientController(PhysioContext.WithSqlite
 // Liefert die Termine eines Monats.
 // Beispiel: http://localhost:5000/api/calendar/2022/1
 app.MapGet("/api/calendar/{year:int}/{month:int}", (int year, int month) =>
-    new CalendarController(PhysioContext.WithSqlite(), calendarService).GetCalendar(year, month));
+    new CalendarController(PhysioContext.WithSqlServerContainer(), calendarService).GetCalendar(year, month));
 
 app.MapFallbackToFile("index.html");
 app.Run();

@@ -1,5 +1,7 @@
 ﻿using Bogus;
+using Bogus.DataSets;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Physiotool.Application.Model;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,20 @@ using System.Threading.Tasks;
 
 namespace Physiotool.Application.Infrastructure
 {
+    public class DateOnlyConverter : ValueConverter<DateOnly, DateTime>
+    {
+        public DateOnlyConverter()
+            : base(v => v.ToDateTime(new TimeOnly(0)), v => DateOnly.FromDateTime(v))
+        { }
+    }
+
+    public class TimeOnlyConverter : ValueConverter<TimeOnly, TimeSpan>
+    {
+        public TimeOnlyConverter()
+            : base(v => v.ToTimeSpan(), v => TimeOnly.FromTimeSpan(v))
+        { }
+    }
+
     public class PhysioContext : DbContext
     {
         public DbSet<Patient> Patients => Set<Patient>();
@@ -21,6 +37,13 @@ namespace Physiotool.Application.Infrastructure
         protected DbSet<DeletedAppointment> DeletedAppointments => Set<DeletedAppointment>();
 
         public static PhysioContext WithSqlite() => WithSqlite("physio.db");
+        public static PhysioContext WithSqlServerContainer()
+        {
+            var opt = new DbContextOptionsBuilder<PhysioContext>()
+                .UseSqlServer(@"Server=127.0.0.1,1433;Initial Catalog=PhysioDb;User Id=sa;Password=SqlServer2019")
+                .Options;
+            return new PhysioContext(opt);
+        }
 
         public static PhysioContext WithSqlite(string filename)
         {
@@ -31,8 +54,11 @@ namespace Physiotool.Application.Infrastructure
         }
 
         public PhysioContext(DbContextOptions<PhysioContext> opt) : base(opt)
+        { }
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
-
+            configurationBuilder.Properties<DateOnly>().HaveConversion<DateOnlyConverter>();
+            configurationBuilder.Properties<TimeOnly>().HaveConversion<TimeOnlyConverter>();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
