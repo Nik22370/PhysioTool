@@ -6,7 +6,7 @@ using Physiotool.Application.Services;
 using Physiotool.Webapi.Controllers;
 
 // Scaffolding the Database
-using (var db = PhysioContext.WithSqlServerContainer())
+using (var db = PhysioContext.WithSqlite())
 {
     db.Database.EnsureDeleted();
     db.Database.EnsureCreated();
