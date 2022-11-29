@@ -18,9 +18,9 @@ namespace Physiotool.Application.Model
             Patient = patient;
             Created = created;
         }
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning disable CS8618
         protected Appointment() { }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning restore CS8618
         [Key]
         public int Id { get; set; }
         public DateTime Date { get; set; }
@@ -32,9 +32,9 @@ namespace Physiotool.Application.Model
 
     public class ConfirmedAppointment : Appointment
     {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning disable CS8618
         protected ConfirmedAppointment() { }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning restore CS8618
         public ConfirmedAppointment(DateTime date, TimeSpan time, Patient patient, DateTime created, TimeSpan duration)
             : base(date, time, patient, created)
         {
@@ -44,9 +44,9 @@ namespace Physiotool.Application.Model
     }
     public class DeletedAppointment : Appointment
     {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning disable CS8618
         protected DeletedAppointment() { }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning restore CS8618
         public DeletedAppointment(DateTime date, TimeSpan time, Patient patient, DateTime created)
             : base(date, time, patient, created) { }
     }
